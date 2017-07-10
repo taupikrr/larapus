@@ -5,6 +5,8 @@
     <link rel="stylesheet" href="bootstrap/css/bootstrap.min.css">
     <link rel="stylesheet" href="/css/jquery.dataTables.css" rel="stylesheet">
     <link rel="stylesheet" href="/css/dataTables.bootstrap.css" rel="stylesheet">
+    <link rel="stylesheet" href="/css/selectize.css" rel="stylesheet">
+    <link rel="stylesheet" href="/css/selectize.bootstrap3.css" rel="stylesheet">
 
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -99,6 +101,7 @@
     <script src="/js/app.js"></script>
     <script src="/js/jquery.dataTables.min.js"></script>
     <script src="/js/dataTables.bootstrap.min.js"></script>
+    <script src="/js/selectize.min.js"></script>
     <script src="/js/custom.js"></script>
         @yield('scripts')
     @include('layouts.menu')

@@ -8,6 +8,12 @@ use Yajra\Datatables\Datatables;
 use App\Book;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\File;
+use App\Http\Requests\StoreBookRequest;
+use App\Http\Requests\UpdateBookRequest;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
+use App\BorrowLog;
+use Illuminate\Support\Facades\Auth;
+use App\Exceptions\BookException;
 
 class BooksController extends Controller
 {
@@ -58,16 +64,10 @@ class BooksController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(StoreBookRequest $request)
     {
         //
-        $this->validate($request,[
-            'title'=>'required|unique:books,title',
-            'author_id'=>'required|exists:authors,id',
-            'amount'=>'required|numeric',
-            'cover'=>'image|max:2048'
-            ]);
-
+            
         $book = Book::create($request->except('cover'));
 
         //isi field cover jika ada cover yang di upload
@@ -129,15 +129,10 @@ class BooksController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(UpdateBookRequest $request, $id)
     {
         //
-        $this->validate($request,[
-            'title'=>'required|unique:books,title,'.$id,
-            'author_id'=>'required|exists:authors,id',
-            'amount'=>'required|numeric',
-            'cover'=>'image|max:2048'
-            ]);
+        
 
         $book=Book::find($id);
         $book->update($request->all());
@@ -162,7 +157,7 @@ class BooksController extends Controller
 
                 try {
                     File::delete($filepath);
-                } cath (FileNotFoundException $e){
+                } catch (FileNotFoundException $e){
                     //
                 }
             }
@@ -172,12 +167,12 @@ class BooksController extends Controller
             $book-save();
         }
 
-        Session::flash("flash_notification",{
+        Session::flash("flash_notification",[
             "level"=>"succes",
             "message"=>"Berhasil menyimpan $book->title"
-        });
+        ]);
 
-        return redirect()-route('books.index');
+        return redirect()->route('books.index');
     }
 
     /**
@@ -197,7 +192,7 @@ class BooksController extends Controller
 
             try{
                 File::delete($filepath);
-                }cath (FileNotFoundException $e){
+                }catch (FileNotFoundException $e){
                     //
                 } 
             }
@@ -210,5 +205,28 @@ class BooksController extends Controller
                 ]);
             return redirect()->route('books.index');
         }
+
+        public function borrow($id)
+        {
+            try{
+                $book=Book::findOrFail($id);
+                Auth::user()->borrow($book);
+                Session::flash("flash_notification",[
+                    "level"=>"succes",
+                    "message"=>"Berhasil meminjam $book->title"
+                ]);
+            }catch (BookException $e){
+                Session::flash("flash_notification",[
+                    "level"=>"danger",
+                    "message"=>$e->getMessage()
+                    ]);
+                
+            }catch (ModelNotFoundException $e){
+                Session::flash("flash_notification",[
+                    "level"=>"danger",
+                    "message"=>"Buku tidak ditemukan."
+                    ]);
+            }
+            return redirect('/');
+        }
     }
-}
