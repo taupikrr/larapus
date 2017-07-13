@@ -164,6 +164,7 @@ return [
         Illuminate\View\ViewServiceProvider::class,
         Laratrust\LaratrustServiceProvider::class,
         Yajra\Datatables\DatatablesServiceProvider::class,
+        Anhskohbo\NoCaptcha\NoCaptchaServiceProvider::class,
 
         /*
          * Package Service Providers...
