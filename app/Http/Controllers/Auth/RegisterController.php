@@ -52,6 +52,7 @@ class RegisterController extends Controller
             'name' => 'required|max:255',
             'email' => 'required|email|max:255|unique:users',
             'password' => 'required|min:6|confirmed',
+            'g-recaptcha-response' => 'required|captcha',
         ]);
     }
 
@@ -70,6 +71,7 @@ class RegisterController extends Controller
             ]);
          $memberRole= Role::where('name','member')->first();
          $user->attachRole($memberRole);
+         $user->sendVerification();
          return $user;
     }
 }
