@@ -56,7 +56,7 @@ return [
     */
 
     'from' => [
-        'address' => 'admin@larapus.com',
+        'address' => 'admin@example.com',
         'name' => 'Admin Larapus',
     ],
 
